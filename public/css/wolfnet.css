@@ -1,0 +1,301 @@
+/* ===== WOLFNET DARK THEME ===== */
+
+:root {
+    --wn-black:    #0a0a0a;
+    --wn-dark:     #141414;
+    --wn-card:     #1c1c1c;
+    --wn-border:   #2a2a2a;
+    --wn-red:      #e50914;
+    --wn-red-dark: #b20710;
+    --wn-text:     #e5e5e5;
+    --wn-muted:    #808080;
+    --wn-white:    #ffffff;
+}
+
+* { box-sizing: border-box; }
+
+body {
+    background-color: var(--wn-dark);
+    color: var(--wn-text);
+    font-family: 'Segoe UI', sans-serif;
+    min-height: 100vh;
+}
+
+/* ===== NAVBAR ===== */
+.wn-navbar {
+    background: linear-gradient(to bottom, rgba(0,0,0,0.9) 0%, transparent 100%);
+    padding: 12px 0;
+    transition: background 0.3s ease;
+}
+
+.wn-navbar.scrolled {
+    background: rgba(10, 10, 10, 0.97) !important;
+}
+
+.wn-logo {
+    font-size: 1.6rem;
+    font-weight: 900;
+    color: var(--wn-white) !important;
+    letter-spacing: 2px;
+    text-decoration: none;
+}
+
+.wn-logo span {
+    color: var(--wn-red);
+}
+
+.wn-nav-link {
+    color: var(--wn-text) !important;
+    font-size: 0.9rem;
+    transition: color 0.2s;
+    padding: 6px 12px !important;
+}
+
+.wn-nav-link:hover { color: var(--wn-white) !important; }
+
+/* ===== SEARCH ===== */
+.wn-search-input {
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2);
+    color: var(--wn-white);
+    border-radius: 4px 0 0 4px;
+    width: 260px;
+}
+
+.wn-search-input:focus {
+    background: rgba(255,255,255,0.15);
+    border-color: var(--wn-white);
+    color: var(--wn-white);
+    box-shadow: none;
+}
+
+.wn-search-input::placeholder { color: var(--wn-muted); }
+
+.wn-search-btn {
+    background: var(--wn-red);
+    color: var(--wn-white);
+    border: none;
+    border-radius: 0 4px 4px 0;
+    padding: 0 14px;
+}
+
+.wn-search-btn:hover {
+    background: var(--wn-red-dark);
+    color: var(--wn-white);
+}
+
+/* ===== BUTTONS ===== */
+.wn-btn-primary {
+    background: var(--wn-red);
+    color: var(--wn-white) !important;
+    border: none;
+    border-radius: 4px;
+    padding: 7px 18px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background 0.2s;
+}
+
+.wn-btn-primary:hover { background: var(--wn-red-dark); }
+
+.wn-btn-outline {
+    color: var(--wn-white) !important;
+    border: 1px solid var(--wn-white);
+    border-radius: 4px;
+    padding: 7px 18px;
+    font-size: 0.85rem;
+    text-decoration: none;
+    transition: background 0.2s, color 0.2s;
+}
+
+.wn-btn-outline:hover {
+    background: var(--wn-white);
+    color: var(--wn-black) !important;
+}
+
+/* ===== DROPDOWN ===== */
+.wn-dropdown {
+    background: var(--wn-card);
+    border: 1px solid var(--wn-border);
+}
+
+.wn-dropdown-item {
+    color: var(--wn-text) !important;
+    font-size: 0.9rem;
+    background: none;
+    width: 100%;
+    text-align: left;
+    border: none;
+    padding: 8px 16px;
+    cursor: pointer;
+}
+
+.wn-dropdown-item:hover { background: var(--wn-border); }
+
+.wn-divider { border-color: var(--wn-border); }
+
+/* ===== MAIN CONTENT ===== */
+.wn-main {
+    padding-top: 70px; /* offset for fixed navbar */
+    min-height: 80vh;
+}
+
+/* ===== MOVIE CARDS ===== */
+.wn-card {
+    background: var(--wn-card);
+    border: none;
+    border-radius: 6px;
+    overflow: hidden;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    cursor: pointer;
+}
+
+.wn-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.7);
+    z-index: 10;
+}
+
+.wn-card img {
+    width: 100%;
+    aspect-ratio: 2/3;
+    object-fit: cover;
+    display: block;
+}
+
+.wn-card-body {
+    padding: 10px 12px;
+}
+
+.wn-card-title {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--wn-white);
+    margin: 0 0 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.wn-card-meta {
+    font-size: 0.75rem;
+    color: var(--wn-muted);
+}
+
+.wn-rating {
+    color: #f5c518;
+    font-size: 0.75rem;
+}
+
+/* ===== SECTION TITLES ===== */
+.wn-section-title {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--wn-white);
+    margin-bottom: 1.2rem;
+    border-left: 4px solid var(--wn-red);
+    padding-left: 12px;
+}
+
+/* ===== FOOTER ===== */
+.wn-footer {
+    background: var(--wn-black);
+    border-top: 1px solid var(--wn-border);
+}
+
+.wn-footer-link {
+    color: var(--wn-muted);
+    text-decoration: none;
+    font-size: 0.85rem;
+    display: block;
+    margin-bottom: 6px;
+    transition: color 0.2s;
+}
+
+.wn-footer-link:hover { color: var(--wn-white); }
+
+/* ===== SCROLLED NAVBAR JS ===== */
+
+
+/* ===== HERO SECTION ===== */
+.wn-hero {
+    position: relative;
+    min-height: 90vh;
+    background: linear-gradient(135deg, #0a0a0a 0%, #1a0a0a 50%, #0a0a0a 100%);
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+}
+
+.wn-hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: url('https://image.tmdb.org/t/p/original/placeholder.jpg') center/cover;
+    opacity: 0.15;
+}
+
+.wn-hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to right, rgba(0,0,0,0.9) 40%, transparent 100%);
+}
+
+.wn-hero-content {
+    position: relative;
+    z-index: 2;
+    padding: 120px 0 80px;
+}
+
+.wn-hero-badge {
+    background: var(--wn-red);
+    color: white;
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 4px 12px;
+    border-radius: 20px;
+    letter-spacing: 1px;
+    display: inline-block;
+    margin-bottom: 1rem;
+}
+
+.wn-hero-title {
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 900;
+    color: var(--wn-white);
+    line-height: 1.1;
+    margin-bottom: 1.2rem;
+}
+
+.wn-hero-desc {
+    font-size: 1.1rem;
+    color: var(--wn-muted);
+    margin-bottom: 2rem;
+    max-width: 480px;
+    line-height: 1.7;
+}
+
+/* ===== DARK SECTION ===== */
+.wn-section-dark {
+    background: var(--wn-black);
+}
+
+/* ===== FEATURE CARDS ===== */
+.wn-feature-card {
+    background: var(--wn-card);
+    border: 1px solid var(--wn-border);
+    border-radius: 12px;
+    padding: 2rem 1.5rem;
+    transition: border-color 0.3s, transform 0.3s;
+}
+
+.wn-feature-card:hover {
+    border-color: var(--wn-red);
+    transform: translateY(-4px);
+}
+
+.wn-feature-icon {
+    font-size: 2.5rem;
+    color: var(--wn-red);
+}
