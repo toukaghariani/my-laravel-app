@@ -299,3 +299,97 @@ body {
     font-size: 2.5rem;
     color: var(--wn-red);
 }
+
+
+
+/* ===== AUTH PAGES ===== */
+.wn-auth-section {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    padding: 40px 0;
+    background: radial-gradient(ellipse at center, #1a0a0a 0%, #0a0a0a 100%);
+}
+
+.wn-auth-card {
+    background: var(--wn-card);
+    border: 1px solid var(--wn-border);
+    border-radius: 12px;
+    padding: 2.5rem 2rem;
+}
+
+.wn-auth-title {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: var(--wn-white);
+    margin-bottom: 1.5rem;
+}
+
+.wn-label {
+    color: var(--wn-text);
+    font-size: 0.85rem;
+    margin-bottom: 6px;
+    display: block;
+}
+
+.wn-input {
+    background: #333;
+    border: 1px solid var(--wn-border);
+    color: var(--wn-white);
+    border-radius: 4px;
+    padding: 10px 14px;
+    font-size: 0.95rem;
+}
+
+.wn-input:focus {
+    background: #3a3a3a;
+    border-color: var(--wn-red);
+    color: var(--wn-white);
+    box-shadow: none;
+}
+
+.wn-input::placeholder { color: var(--wn-muted); }
+
+.wn-input-addon {
+    background: #333;
+    border: 1px solid var(--wn-border);
+    border-left: none;
+    color: var(--wn-muted);
+}
+
+.wn-input-addon:hover {
+    background: #3a3a3a;
+    color: var(--wn-white);
+}
+
+.wn-checkbox {
+    width: 16px;
+    height: 16px;
+    accent-color: var(--wn-red);
+    cursor: pointer;
+}
+
+.wn-auth-divider {
+    text-align: center;
+    margin: 1.2rem 0;
+    color: var(--wn-muted);
+    font-size: 0.85rem;
+}
+
+.wn-alert-danger {
+    background: rgba(229, 9, 20, 0.15);
+    border: 1px solid rgba(229, 9, 20, 0.3);
+    color: #ff6b6b;
+    border-radius: 6px;
+    padding: 10px 14px;
+    margin-bottom: 1rem;
+}
+
+.wn-alert-success {
+    background: rgba(40, 167, 69, 0.15);
+    border: 1px solid rgba(40, 167, 69, 0.3);
+    color: #51cf66;
+    border-radius: 6px;
+    padding: 10px 14px;
+    margin-bottom: 1rem;
+}
