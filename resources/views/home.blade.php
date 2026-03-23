@@ -99,20 +99,23 @@
                 </div>
             </div>
             <div class="col-md-4">
-                <div class="wn-feature-card">
-                    <i class="bi bi-heart wn-feature-icon"></i>
-                    <h5 class="text-white mt-3">My Favorites</h5>
-                    <p class="text-muted small">Save your favorite movies and series to watch later.</p>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="wn-feature-card">
-                    <i class="bi bi-shield-check wn-feature-icon"></i>
-                    <h5 class="text-white mt-3">Premium Access</h5>
-                    <p class="text-muted small">Unlock exclusive content with our premium subscription.</p>
-                </div>
-            </div>
+    <a href="{{ url('/favorites') }}" style="text-decoration:none;">
+        <div class="wn-feature-card">
+            <i class="bi bi-heart wn-feature-icon"></i>
+            <h5 class="text-white mt-3">My Favorites</h5>
+            <p class="text-muted small">Save your favorite movies and series to watch later.</p>
         </div>
+    </a>
+</div>
+            <div class="col-md-4">
+    <a href="{{ url('/premium') }}" style="text-decoration:none;">
+        <div class="wn-feature-card">
+            <i class="bi bi-shield-check wn-feature-icon"></i>
+            <h5 class="text-white mt-3">Premium Access</h5>
+            <p class="text-muted small">Unlock exclusive content with our premium subscription.</p>
+        </div>
+    </a>
+</div>
     </section>
 
 @endsection

@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Route;
 // Homepage
 Route::get('/', function () {
     return view('home');
-});
+})->name('home');
 
 // Login page (GET = show form)
 Route::get('/login', function () {
@@ -65,3 +65,40 @@ Route::get('/premium', function () {
 Route::get('/search', function () {
     return view('search');
 })->name('search');
+
+
+
+Route::get('/movie/{id}', function ($id) {
+    return view('movie');
+})->name('movie.show');
+
+
+Route::get('/movies', function () {
+    return view('movies');
+})->name('movies');
+
+
+Route::get('/profile', function () {
+    return view('profile');
+})->name('profile');
+  
+
+Route::get('/profile', function () { return view('profile'); })->name('profile');
+Route::get('/watchlist', function () { return view('watchlist'); })->name('watchlist');
+Route::get('/history', function () { return view('history'); })->name('history');
+
+
+Route::get('/watchlist', function () {
+    return view('watchlist');
+})->name('watchlist');
+
+Route::get('/history', function () {
+    return view('history');
+})->name('history');
+
+Route::get('/admin', function () {
+    return view('admin');
+})->name('admin');
+Route::get('/series', function () {
+    return view('series');
+})->name('series');
