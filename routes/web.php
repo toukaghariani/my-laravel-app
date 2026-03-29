@@ -49,7 +49,30 @@ Route::post('/logout', function () {
 
 /*
 |----------------------------------------------------------
-| PROTECTED ROUTES (require login)
+| BROWSE ROUTES
+|----------------------------------------------------------
+*/
+
+Route::get('/movies', function () {
+    return view('movies');
+})->name('movies');
+
+Route::get('/series', function () {
+    return view('series');
+})->name('series');
+
+Route::get('/movie/{id}', function ($id) {
+    return view('movie');
+})->name('movie.show');
+
+Route::get('/search', function () {
+    return view('search');
+})->name('search');
+
+
+/*
+|----------------------------------------------------------
+| USER ROUTES
 | TODO for Backend Dev: add auth middleware
 |----------------------------------------------------------
 */
@@ -57,36 +80,6 @@ Route::post('/logout', function () {
 Route::get('/favorites', function () {
     return view('favorites');
 })->name('favorites');
-
-Route::get('/premium', function () {
-    return view('premium');
-})->name('premium');
-
-Route::get('/search', function () {
-    return view('search');
-})->name('search');
-
-
-
-Route::get('/movie/{id}', function ($id) {
-    return view('movie');
-})->name('movie.show');
-
-
-Route::get('/movies', function () {
-    return view('movies');
-})->name('movies');
-
-
-Route::get('/profile', function () {
-    return view('profile');
-})->name('profile');
-  
-
-Route::get('/profile', function () { return view('profile'); })->name('profile');
-Route::get('/watchlist', function () { return view('watchlist'); })->name('watchlist');
-Route::get('/history', function () { return view('history'); })->name('history');
-
 
 Route::get('/watchlist', function () {
     return view('watchlist');
@@ -96,9 +89,22 @@ Route::get('/history', function () {
     return view('history');
 })->name('history');
 
+Route::get('/profile', function () {
+    return view('profile');
+})->name('profile');
+
+Route::get('/premium', function () {
+    return view('premium');
+})->name('premium');
+
+
+/*
+|----------------------------------------------------------
+| ADMIN ROUTES
+| TODO for Backend Dev: add admin middleware
+|----------------------------------------------------------
+*/
+
 Route::get('/admin', function () {
     return view('admin');
 })->name('admin');
-Route::get('/series', function () {
-    return view('series');
-})->name('series');
