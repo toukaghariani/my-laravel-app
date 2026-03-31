@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WolfNet - @yield('title', 'Watch Movies & Series')</title>
@@ -64,6 +65,11 @@
                             <i class="bi bi-clock-history"></i> History
                         </a>
                     </li>
+                    <li class="nav-item">
+    <a class="nav-link wn-nav-link" href="{{ url('/subscriptions/plans') }}">
+        <i class="bi bi-crown"></i> Plans
+    </a>
+</li>
                 </ul>
 
                 <!-- Search bar -->
@@ -152,6 +158,7 @@
                         <li><a href="{{ url('/profile') }}" class="wn-footer-link">My Profile</a></li>
                         <li><a href="{{ url('/watchlist') }}" class="wn-footer-link">Watchlist</a></li>
                         <li><a href="{{ url('/history') }}" class="wn-footer-link">Watch History</a></li>
+                        <li><a href="{{ url('/subscriptions/plans') }}" class="wn-footer-link">Subscription Plans</a></li>
                     </ul>
                 </div>
                 <div class="col-md-4 mb-4">

@@ -108,3 +108,25 @@ Route::get('/premium', function () {
 Route::get('/admin', function () {
     return view('admin');
 })->name('admin');
+
+
+
+Route::get('/watch/{id}', function ($id) {
+    return view('watch');
+})->name('watch');
+
+Route::get('/subscriptions/plans', function () {
+    return view('subscriptions.plans');
+})->name('subscriptions.plans');
+
+Route::post('/watch/progress', function () {
+    // TODO: Backend → WatchProgressController@store
+})->name('watch.progress');
+
+Route::get('/watch/progress/{id}', function ($id) {
+    // TODO: Backend → WatchProgressController@get
+})->name('watch.progress.get');
+
+Route::get('/admin/videos', function () {
+    return view('admin.videos.index');
+})->name('admin.videos.index');
