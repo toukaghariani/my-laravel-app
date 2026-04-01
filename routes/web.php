@@ -130,3 +130,11 @@ Route::get('/watch/progress/{id}', function ($id) {
 Route::get('/admin/videos', function () {
     return view('admin.videos.index');
 })->name('admin.videos.index');
+
+Route::get('/admin/videos/create', function () {
+    return view('admin.videos.create');
+})->name('admin.videos.create');
+
+Route::get('/admin/videos/{id}/edit', function ($id) {
+    return view('admin.videos.edit');
+})->name('admin.videos.edit');
