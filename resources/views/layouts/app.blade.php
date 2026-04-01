@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>WolfNet - @yield('title', 'Watch Movies & Series')</title>
 
     <!-- Bootstrap 5 CSS -->
@@ -66,10 +66,10 @@
                         </a>
                     </li>
                     <li class="nav-item">
-    <a class="nav-link wn-nav-link" href="{{ url('/subscriptions/plans') }}">
-        <i class="bi bi-crown"></i> Plans
-    </a>
-</li>
+                        <a class="nav-link wn-nav-link" href="{{ url('/subscriptions/plans') }}">
+                            <i class="bi bi-crown"></i> Plans
+                        </a>
+                    </li>
                 </ul>
 
                 <!-- Search bar -->
@@ -94,6 +94,8 @@
                                 {{ Auth::user()->name }}
                             </a>
                             <ul class="dropdown-menu wn-dropdown">
+
+                                {{-- Regular user links --}}
                                 <li><a class="dropdown-item wn-dropdown-item" href="{{ url('/profile') }}">
                                     <i class="bi bi-person me-2"></i>Profile
                                 </a></li>
@@ -103,7 +105,27 @@
                                 <li><a class="dropdown-item wn-dropdown-item" href="{{ url('/history') }}">
                                     <i class="bi bi-clock-history me-2"></i>Watch History
                                 </a></li>
+                                <li><a class="dropdown-item wn-dropdown-item" href="{{ url('/subscriptions/plans') }}">
+                                    <i class="bi bi-crown me-2"></i>Subscription Plans
+                                </a></li>
+
                                 <li><hr class="dropdown-divider wn-divider"></li>
+
+                                {{-- Admin links — only visible to admin --}}
+                                {{-- TODO: change email to your real admin email --}}
+                                @if(Auth::user()->email === 'medaminenefzi49@gmail.com')
+                                    <li><a class="dropdown-item wn-dropdown-item" href="{{ url('/admin') }}"
+                                           style="color:#f5c518;">
+                                        <i class="bi bi-speedometer2 me-2"></i>Admin Panel
+                                    </a></li>
+                                    <li><a class="dropdown-item wn-dropdown-item" href="{{ url('/admin/videos') }}"
+                                           style="color:#f5c518;">
+                                        <i class="bi bi-film me-2"></i>Manage Videos
+                                    </a></li>
+                                    <li><hr class="dropdown-divider wn-divider"></li>
+                                @endif
+
+                                {{-- Logout --}}
                                 <li>
                                     <form action="{{ url('/logout') }}" method="POST">
                                         @csrf
@@ -112,6 +134,7 @@
                                         </button>
                                     </form>
                                 </li>
+
                             </ul>
                         </li>
                     @else
@@ -147,6 +170,7 @@
                         <li><a href="{{ url('/') }}" class="wn-footer-link">Home</a></li>
                         <li><a href="{{ url('/movies') }}" class="wn-footer-link">Movies</a></li>
                         <li><a href="{{ url('/series') }}" class="wn-footer-link">Series</a></li>
+                        <li><a href="{{ url('/search') }}" class="wn-footer-link">Search</a></li>
                     </ul>
                 </div>
                 <div class="col-md-2 mb-4">

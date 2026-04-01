@@ -101,14 +101,18 @@
                         <a href="{{ url('/movie/' . $m['id']) }}" class="wn-movie-play-btn">
                             <svg viewBox="0 0 24 24" fill="currentColor" width="28" height="28"><path d="M8 5v14l11-7z"/></svg>
                         </a>
-                        <div class="wn-movie-card-btns">
-                            <a href="{{ url('/movie/' . $m['id']) }}" class="wn-movie-detail-btn">
-                                <i class="bi bi-info-circle"></i> Details
-                            </a>
-                            <button class="wn-movie-fav-btn" onclick="toggleFav(this, {{ $m['id'] }})" title="Add to Favorites">
-                                <i class="bi bi-heart"></i>
-                            </button>
-                        </div>
+                       <div class="wn-movie-card-btns">
+    <a href="{{ url('/watch/' . $m['id']) }}" class="wn-movie-detail-btn"
+       style="background:var(--wn-red);color:white;border:none;">
+        <i class="bi bi-play-fill"></i> Watch
+    </a>
+    <a href="{{ url('/movie/' . $m['id']) }}" class="wn-movie-detail-btn">
+        <i class="bi bi-info-circle"></i>
+    </a>
+    <button class="wn-movie-fav-btn" onclick="toggleFav(this, {{ $m['id'] }})" title="Add to Favorites">
+        <i class="bi bi-heart"></i>
+    </button>
+</div>
                     </div>
 
                     {{-- Badges --}}

@@ -138,3 +138,13 @@ Route::get('/admin/videos/create', function () {
 Route::get('/admin/videos/{id}/edit', function ($id) {
     return view('admin.videos.edit');
 })->name('admin.videos.edit');
+
+Route::get('/watch/{id}/stream', function ($id) {
+    // TODO: Backend dev → fetch real stream URL from database
+    // Example response:
+    return response()->json([
+        'url' => 'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8', // test HLS stream
+        'type' => 'hls',
+        'quality' => '720p'
+    ]);
+})->name('watch.stream');

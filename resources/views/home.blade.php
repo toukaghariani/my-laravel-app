@@ -91,13 +91,15 @@
     <section class="container py-5">
         <h2 class="wn-section-title text-center border-0 ps-0">Why WolfNet?</h2>
         <div class="row g-4 mt-2 text-center">
-            <div class="col-md-4">
-                <div class="wn-feature-card">
-                    <i class="bi bi-play-circle wn-feature-icon"></i>
-                    <h5 class="text-white mt-3">HD Streaming</h5>
-                    <p class="text-muted small">Watch in crystal clear HD quality on any device, anytime.</p>
-                </div>
-            </div>
+           <div class="col-md-4">
+    <a href="{{ url('/movies') }}" style="text-decoration:none;">
+        <div class="wn-feature-card">
+            <i class="bi bi-play-circle wn-feature-icon"></i>
+            <h5 class="text-white mt-3">HD Streaming</h5>
+            <p class="text-muted small">Watch in crystal clear HD quality on any device, anytime.</p>
+        </div>
+    </a>
+</div>
             <div class="col-md-4">
     <a href="{{ url('/favorites') }}" style="text-decoration:none;">
         <div class="wn-feature-card">

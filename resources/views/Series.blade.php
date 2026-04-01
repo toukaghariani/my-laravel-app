@@ -99,13 +99,17 @@
 
                     {{-- Overlay --}}
                     <div class="wn-series-overlay">
-                        <a href="{{ url('/movie/' . $s['id']) }}" class="wn-series-play-btn">
-                            <svg viewBox="0 0 24 24" fill="currentColor" width="28" height="28"><path d="M8 5v14l11-7z"/></svg>
-                        </a>
-                        <button class="wn-series-add-btn" onclick="addToWatchlist({{ $s['id'] }}, this)" title="Add to Watchlist">
-                            <i class="bi bi-bookmark-plus"></i>
-                        </button>
-                    </div>
+    <a href="{{ url('/watch/' . $s['id']) }}" class="wn-series-play-btn">
+        <svg viewBox="0 0 24 24" fill="currentColor" width="28" height="28"><path d="M8 5v14l11-7z"/></svg>
+    </a>
+    <a href="{{ url('/movie/' . $s['id']) }}" class="wn-series-add-btn"
+       title="Details" style="text-decoration:none;color:white;">
+        <i class="bi bi-info-circle"></i>
+    </a>
+    <button class="wn-series-add-btn" onclick="addToWatchlist({{ $s['id'] }}, this)" title="Add to Watchlist">
+        <i class="bi bi-bookmark-plus"></i>
+    </button>
+</div>
 
                     {{-- Rating badge --}}
                     <div class="wn-series-rating-badge">⭐ {{ $s['rating'] }}</div>

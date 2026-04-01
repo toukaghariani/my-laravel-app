@@ -441,6 +441,106 @@
 @push('scripts')
 <script>
 const video = document.getElementById('mainPlayer');
+/* ── Stream URL Fetch + Playback Logic ── */
+const MOVIE_ID = 1;
+const STREAM_URL = '';
+
+function loadStream() {
+    // If backend gives us a direct URL
+    if (STREAM_URL && STREAM_URL !== '') {
+        playStream(STREAM_URL);
+        return;
+    }
+
+    // Otherwise fetch from backend
+    fetch('/watch/' + MOVIE_ID + '/stream', {
+        method: 'GET',
+        headers: {
+            'Accept': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || ''
+        }
+    })
+    .then(function(response) {
+        if (!response.ok) throw new Error('Stream not available');
+        return response.json();
+    })
+    .then(function(data) {
+        if (data.url) {
+            playStream(data.url);
+        } else {
+            showStreamError('No stream URL returned from server.');
+        }
+    })
+    .catch(function(err) {
+        showStreamError('Could not load stream: ' + err.message);
+        console.error('Stream fetch error:', err);
+    });
+}
+
+function playStream(url) {
+    // Remove lock overlay if user is premium
+   
+    document.getElementById('lockOverlay').style.display = 'none';
+
+    // Set video source
+    const source = document.createElement('source');
+    source.src = url;
+
+    // Detect format
+    if (url.includes('.m3u8')) {
+        source.type = 'application/x-mpegURL'; // HLS stream
+        loadHLS(url);
+    } else if (url.includes('.mpd')) {
+        source.type = 'application/dash+xml'; // DASH stream
+    } else {
+        source.type = 'video/mp4'; // Regular MP4
+        video.src = url;
+        video.load();
+    }
+
+    console.log('Stream loaded:', url);
+}
+
+function loadHLS(url) {
+    // Check if browser supports HLS natively (Safari)
+    if (video.canPlayType('application/vnd.apple.mpegurl')) {
+        video.src = url;
+        video.load();
+    } else {
+        // For Chrome/Firefox — load hls.js library
+        const script = document.createElement('script');
+        script.src = 'https://cdn.jsdelivr.net/npm/hls.js@latest';
+        script.onload = function() {
+            if (window.Hls && Hls.isSupported()) {
+                const hls = new Hls();
+                hls.loadSource(url);
+                hls.attachMedia(video);
+                hls.on(Hls.Events.MANIFEST_PARSED, function() {
+                    console.log('HLS manifest loaded');
+                });
+            }
+        };
+        document.head.appendChild(script);
+    }
+}
+
+function showStreamError(msg) {
+    const overlay = document.getElementById('playOverlay');
+    overlay.style.display = 'flex';
+    overlay.innerHTML = `
+        <div style="text-align:center;padding:20px;">
+            <div style="font-size:3rem;margin-bottom:16px;">⚠️</div>
+            <p style="color:white;font-size:1rem;font-weight:700;">Stream Unavailable</p>
+            <p style="color:#b0b0b0;font-size:0.85rem;">${msg}</p>
+        </div>
+    `;
+    overlay.onclick = null;
+}
+
+// Auto-load stream on page load
+document.addEventListener('DOMContentLoaded', function() {
+    loadStream();
+});
 const playPauseBtn = document.getElementById('playPauseBtn');
 const playIcon = document.getElementById('playIcon');
 const playOverlay = document.getElementById('playOverlay');

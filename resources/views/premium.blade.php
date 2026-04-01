@@ -66,6 +66,9 @@
                     <li class="wn-feature-item wn-feature-yes"><i class="bi bi-check-circle-fill"></i> Exclusive content</li>
                     <li class="wn-feature-item wn-feature-yes"><i class="bi bi-check-circle-fill"></i> Download offline</li>
                     <li class="wn-feature-item wn-feature-yes"><i class="bi bi-check-circle-fill"></i> Ad-free experience</li>
+                    <a href="{{ url('/subscriptions/plans') }}" class="wn-btn-outline btn mt-3">
+    📋 View All Plans
+</a>
                 </ul>
                 <button class="wn-plan-btn wn-plan-btn-primary" onclick="showPaymentForm('premium', 15)">
                     Subscribe Now
