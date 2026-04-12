@@ -62,9 +62,10 @@ class User extends Authenticatable
         return $this->hasMany(Payment::class);
     }
 
+    // Watchlist is an independent entity (bookmark system), NOT a pivot
     public function watchlist()
     {
-        return $this->belongsToMany(Content::class, 'watchlists');
+        return $this->hasMany(Watchlist::class);
     }
 
     // Returns true if user has an active non-expired subscription
@@ -76,9 +77,34 @@ class User extends Authenticatable
                     ->exists();
     }
 
+    // Returns true if user account is active (not suspended)
+    public function isActive(): bool
+    {
+        return $this->status === 'active';
+    }
+
     // Returns true if user is an administrator
     public function isAdmin(): bool
     {
         return $this->role === 'admin';
+    }
+
+    // Returns the single currently-active subscription (or null)
+    public function currentSubscription()
+    {
+        return $this->subscriptions()
+                    ->where('status', 'active')
+                    ->where('ends_at', '>', now())
+                    ->latest()
+                    ->first();
+    }
+
+    // Returns the queued (future) subscription if one exists
+    public function queuedSubscription()
+    {
+        return $this->subscriptions()
+                    ->where('status', 'queued')
+                    ->latest()
+                    ->first();
     }
 }

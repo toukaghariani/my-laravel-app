@@ -35,4 +35,11 @@ return [
         ],
     ],
 
+    // ── Flouci Tunisian payment gateway ───────────────────────────
+    'flouci' => [
+        'app_token' => env('FLOUCI_APP_TOKEN'),
+        'app_secret' => env('FLOUCI_APP_SECRET'),
+    ],
+
 ];
+

@@ -28,6 +28,15 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
+        $user = Auth::user();
+
+        if (!$user->isActive()) {
+            Auth::logout();
+            return back()->withErrors([
+                'email' => 'Your account has been suspended. Please contact support.',
+            ]);
+        }
+
         return redirect()->intended(route('home'));
     }
 
