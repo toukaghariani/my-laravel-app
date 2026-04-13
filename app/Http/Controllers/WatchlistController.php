@@ -21,7 +21,7 @@ class WatchlistController extends Controller
             ->latest()
             ->paginate(20);
 
-        return view('watchlist.index', compact('items'));
+        return view('user.watchlist', compact('items'));
     }
 
 

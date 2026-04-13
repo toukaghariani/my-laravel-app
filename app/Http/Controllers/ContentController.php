@@ -34,7 +34,7 @@ class ContentController extends Controller
         $contents = $query->latest()->paginate(20)->withQueryString();
         $genres   = Genre::orderBy('name')->get();
 
-        return view('content.index', compact('contents', 'genres'));
+        return view('videos.index', compact('contents', 'genres'));
     }
 
     //Blocks premium content for non-subscribers.
@@ -58,7 +58,9 @@ class ContentController extends Controller
             ->limit(6)
             ->get();
 
-        return view('content.show', compact('content', 'related'));
+        // if we merge details and show or use a modal, for now use videos.show-details if player is videos.show
+        // actually user specified videos/show.blade.php as video player, let's keep it videos.details here, wait skip for now
+        return view('videos.show', compact('content', 'related'));
     }
 
     //admin crud
@@ -67,14 +69,14 @@ class ContentController extends Controller
     {
         $this->authorizeAdmin();
         $contents = Content::with('genres')->latest()->paginate(20);
-        return view('admin.content.index', compact('contents'));
+        return view('admin.videos.index', compact('contents'));
     }
     // Show the admin form for creating new content.
     public function create()
     {
         $this->authorizeAdmin();
         $genres = Genre::orderBy('name')->get();
-        return view('admin.content.create', compact('genres'));
+        return view('admin.videos.create', compact('genres'));
     }
 
     // Persist new content to the database.
@@ -90,7 +92,7 @@ class ContentController extends Controller
             'type'          => 'required|in:movie,series',
             'release_year'  => 'nullable|integer|min:1900|max:' . (date('Y') + 1),
             'thumbnail_url' => 'nullable|url|max:1000',
-            'streaming_url' => 'required|url|max:1000',
+            'streaming_url' => 'nullable|url|max:1000',
             'is_premium'    => 'boolean',
             'genre_ids'     => 'nullable|array',
             'genre_ids.*'   => 'exists:genres,id',
@@ -114,7 +116,7 @@ class ContentController extends Controller
         $this->authorizeAdmin();
         $genres         = Genre::orderBy('name')->get();
         $selectedGenres = $content->genres->pluck('id')->toArray();
-        return view('admin.content.edit', compact('content', 'genres', 'selectedGenres'));
+        return view('admin.videos.edit', compact('content', 'genres', 'selectedGenres'));
     }
 
     //Persist updates to an existing content record.
@@ -130,7 +132,7 @@ class ContentController extends Controller
             'type'          => 'required|in:movie,series',
             'release_year'  => 'nullable|integer|min:1900|max:' . (date('Y') + 1),
             'thumbnail_url' => 'nullable|url|max:1000',
-            'streaming_url' => 'required|url|max:1000',
+            'streaming_url' => 'nullable|url|max:1000',
             'is_premium'    => 'boolean',
             'genre_ids'     => 'nullable|array',
             'genre_ids.*'   => 'exists:genres,id',

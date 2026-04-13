@@ -1,3 +1,161 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+    body {
+        @apply bg-surface-900 text-gray-100;
+    }
+
+    ::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+        background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+        background: #333;
+        border-radius: 3px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+        background: #555;
+    }
+}
+
+@layer components {
+    /* ── Content Cards ─────────────────────────── */
+    .content-card {
+        @apply relative rounded-md overflow-hidden cursor-pointer
+               transition-all duration-300 ease-out
+               hover:scale-105 hover:z-10 hover:shadow-2xl hover:shadow-brand/10;
+    }
+    .content-card img {
+        @apply w-full h-full object-cover;
+    }
+    .content-card .card-overlay {
+        @apply absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent
+               opacity-0 transition-opacity duration-300 flex flex-col justify-end p-3;
+    }
+    .content-card:hover .card-overlay {
+        @apply opacity-100;
+    }
+
+    /* ── Buttons ───────────────────────────────── */
+    .btn-primary {
+        @apply inline-flex items-center justify-center gap-2 px-6 py-3
+               bg-brand text-white font-semibold rounded-md
+               hover:bg-brand-hover active:scale-95
+               transition-all duration-200;
+    }
+    .btn-secondary {
+        @apply inline-flex items-center justify-center gap-2 px-6 py-3
+               bg-surface-500/80 text-white font-semibold rounded-md
+               hover:bg-surface-400 active:scale-95
+               transition-all duration-200;
+    }
+    .btn-outline {
+        @apply inline-flex items-center justify-center gap-2 px-6 py-3
+               border border-gray-500 text-gray-300 font-medium rounded-md
+               hover:border-white hover:text-white active:scale-95
+               transition-all duration-200;
+    }
+    .btn-danger {
+        @apply inline-flex items-center justify-center gap-2 px-4 py-2
+               bg-red-700 text-white text-sm font-medium rounded-md
+               hover:bg-red-600 active:scale-95
+               transition-all duration-200;
+    }
+    .btn-sm {
+        @apply !px-4 !py-2 !text-sm;
+    }
+
+    /* ── Glass / Surface Panels ────────────────── */
+    .glass {
+        @apply bg-black/50 backdrop-blur-xl border border-white/10 rounded-lg;
+    }
+    .surface-card {
+        @apply bg-surface-700 border border-surface-500 rounded-lg;
+    }
+
+    /* ── Inputs ────────────────────────────────── */
+    .input-dark {
+        @apply w-full px-4 py-3 bg-surface-700 border border-surface-500 rounded-md
+               text-white placeholder-gray-500
+               focus:outline-none focus:ring-2 focus:ring-brand/60 focus:border-brand/40
+               transition-all duration-200;
+    }
+    .select-dark {
+        @apply w-full px-4 py-3 bg-surface-700 border border-surface-500 rounded-md
+               text-white
+               focus:outline-none focus:ring-2 focus:ring-brand/60 focus:border-brand/40
+               transition-all duration-200;
+    }
+
+    /* ── Content Rows (Netflix-style) ─────────── */
+    .content-row {
+        @apply mb-10;
+    }
+    .content-row-title {
+        @apply text-xl font-bold text-white mb-4 px-4 md:px-12;
+    }
+    .content-row-scroll {
+        @apply flex gap-2 overflow-x-auto px-4 md:px-12 pb-4 scrollbar-hide;
+    }
+
+    /* ── Badge ─────────────────────────────────── */
+    .badge {
+        @apply inline-flex items-center px-2 py-0.5 rounded text-xs font-medium;
+    }
+    .badge-premium {
+        @apply bg-yellow-500/20 text-yellow-400 border border-yellow-500/30;
+    }
+    .badge-free {
+        @apply bg-green-500/20 text-green-400 border border-green-500/30;
+    }
+    .badge-genre {
+        @apply bg-surface-500 text-gray-300 border border-surface-400;
+    }
+
+    /* ── Admin Table ───────────────────────────── */
+    .admin-table {
+        @apply w-full text-sm text-left;
+    }
+    .admin-table thead {
+        @apply border-b border-surface-500;
+    }
+    .admin-table th {
+        @apply px-4 py-3 text-xs font-semibold text-gray-400 uppercase tracking-wider;
+    }
+    .admin-table td {
+        @apply px-4 py-3 text-gray-300;
+    }
+    .admin-table tbody tr {
+        @apply border-b border-surface-600 hover:bg-surface-700/50 transition-colors;
+    }
+}
+
+@layer utilities {
+    .scrollbar-hide {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+    .scrollbar-hide::-webkit-scrollbar {
+        display: none;
+    }
+    .text-shadow {
+        text-shadow: 0 2px 8px rgba(0,0,0,0.8);
+    }
+    .line-clamp-2 {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+    .line-clamp-3 {
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+}

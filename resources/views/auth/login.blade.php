@@ -1,47 +1,73 @@
-<x-guest-layout>
-    <!-- Session Status -->
-    <x-auth-session-status class="mb-4" :status="session('status')" />
+@extends('layouts.app')
 
-    <form method="POST" action="{{ route('login') }}">
-        @csrf
+@section('title', 'Sign In — WolfNet')
 
-        <!-- Email Address -->
-        <div>
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autofocus autocomplete="username" />
-            <x-input-error :messages="$errors->get('email')" class="mt-2" />
-        </div>
+@section('content')
+<div class="min-h-screen flex items-center justify-center pt-20 pb-12 px-4">
+    <div class="w-full max-w-md">
+        {{-- Card --}}
+        <div class="surface-card p-8 md:p-10">
+            <h1 class="text-3xl font-bold text-white mb-2">Sign In</h1>
+            <p class="text-gray-500 text-sm mb-8">Welcome back to WolfNet</p>
 
-        <!-- Password -->
-        <div class="mt-4">
-            <x-input-label for="password" :value="__('Password')" />
-
-            <x-text-input id="password" class="block mt-1 w-full"
-                            type="password"
-                            name="password"
-                            required autocomplete="current-password" />
-
-            <x-input-error :messages="$errors->get('password')" class="mt-2" />
-        </div>
-
-        <!-- Remember Me -->
-        <div class="block mt-4">
-            <label for="remember_me" class="inline-flex items-center">
-                <input id="remember_me" type="checkbox" class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500" name="remember">
-                <span class="ms-2 text-sm text-gray-600">{{ __('Remember me') }}</span>
-            </label>
-        </div>
-
-        <div class="flex items-center justify-end mt-4">
-            @if (Route::has('password.request'))
-                <a class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" href="{{ route('password.request') }}">
-                    {{ __('Forgot your password?') }}
-                </a>
+            {{-- Session Status --}}
+            @if(session('status'))
+                <div class="mb-4 text-sm text-green-400 bg-green-900/30 border border-green-800 rounded-md px-4 py-3">
+                    {{ session('status') }}
+                </div>
             @endif
 
-            <x-primary-button class="ms-3">
-                {{ __('Log in') }}
-            </x-primary-button>
+            <form method="POST" action="{{ route('login') }}" class="space-y-5">
+                @csrf
+
+                {{-- Email --}}
+                <div>
+                    <label for="email" class="block text-sm font-medium text-gray-300 mb-1.5">Email</label>
+                    <input id="email" type="email" name="email" value="{{ old('email') }}"
+                           class="input-dark" required autofocus autocomplete="username"
+                           placeholder="you@example.com">
+                    @error('email')
+                        <p class="mt-1.5 text-sm text-red-400">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                {{-- Password --}}
+                <div>
+                    <label for="password" class="block text-sm font-medium text-gray-300 mb-1.5">Password</label>
+                    <input id="password" type="password" name="password"
+                           class="input-dark" required autocomplete="current-password"
+                           placeholder="••••••••">
+                    @error('password')
+                        <p class="mt-1.5 text-sm text-red-400">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                {{-- Remember + Forgot --}}
+                <div class="flex items-center justify-between">
+                    <label class="flex items-center gap-2 cursor-pointer">
+                        <input type="checkbox" name="remember"
+                               class="rounded bg-surface-600 border-surface-400 text-brand focus:ring-brand/50 focus:ring-offset-0">
+                        <span class="text-sm text-gray-400">Remember me</span>
+                    </label>
+                    @if (Route::has('password.request'))
+                        <a href="{{ route('password.request') }}" class="text-sm text-brand hover:text-brand-hover transition-colors">
+                            Forgot password?
+                        </a>
+                    @endif
+                </div>
+
+                {{-- Submit --}}
+                <button type="submit" class="btn-primary w-full text-base">
+                    Sign In
+                </button>
+            </form>
+
+            {{-- Register link --}}
+            <p class="mt-6 text-center text-sm text-gray-500">
+                New to WolfNet?
+                <a href="{{ route('register') }}" class="text-white hover:text-brand transition-colors font-medium">Create an account</a>
+            </p>
         </div>
-    </form>
-</x-guest-layout>
+    </div>
+</div>
+@endsection

@@ -11,8 +11,25 @@ export default {
 
     theme: {
         extend: {
+            colors: {
+                brand: {
+                    DEFAULT: '#E50914',
+                    hover: '#F40612',
+                    dark: '#B20710',
+                },
+                surface: {
+                    950: '#060606',
+                    900: '#0a0a0a',
+                    800: '#111111',
+                    700: '#181818',
+                    600: '#222222',
+                    500: '#2a2a2a',
+                    400: '#333333',
+                    300: '#444444',
+                },
+            },
             fontFamily: {
-                sans: ['Figtree', ...defaultTheme.fontFamily.sans],
+                sans: ['Inter', ...defaultTheme.fontFamily.sans],
             },
         },
     },

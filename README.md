@@ -1,59 +1,82 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# WolfNet
+A premium, dark-themed streaming platform built with Laravel 11. 
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+WolfNet offers a complete, end-to-end solution for a video-on-demand (VOD) platform, similar to Netflix or Flixer. It handles everything from user authentication and subscription management to automated content aggregation from TMDB (The Movie Database).
 
-## About Laravel
+## Features
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- **Premium UI/UX:** A "dark mode first", highly responsive interface utilizing Tailwind CSS v4 and Alpine.js. Includes a sticky glassmorphic navbar, rich content carousels, hover-based preview cards, and dynamic video progress tracking.
+- **TMDB API Integration:** 
+  - **Manual Import:** A dedicated Admin UI to search for any Movie or TV Show on TMDB and instantly import it with all metadata (genres, posters, backdrop images, TMDB star rating).
+  - **Automated Sync:** A built-in Laravel Scheduler (`tmdb:import`) runs daily at 3:00 AM to automatically fetch and add the world's top 20 trending titles to your application.
+- **Video Player & Progress Tracking:** Tracks exactly where users stopped watching via Ajax requests, and perfectly resumes playback so they never lose their spot. 
+- **User Ecosystem:** Profiles, custom Watchlists (with quick add/remove), and visual watch history.
+- **Integrated Payments:** Full integration with the Tunisian **Flouci Gateway** to handle premium subscription checkouts, upgrades, and payment tracking.
+- **Admin Dashboard:** Total oversight over the platform. Manage users, view subscription/revenue stats, and full CRUD control over the content and plans catalogue. 
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Technology Stack
+- **Backend Framework:** Laravel 11 (PHP 8.2+)
+- **Database:** MySQL
+- **CSS Framework:** Tailwind CSS v4
+- **Javascript:** Vanilla JS (Player progress tracking), Alpine.js (UI interactions)
+- **Asset Bundler:** Vite
+- **External APIs:** The Movie Database (v3), Flouci Gateway
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## Installation & Setup
 
-## Learning Laravel
+1. **Clone the repository:**
+   ```bash
+   git clone <repository_url>
+   cd my-laravel-app
+   ```
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+2. **Install Composer Dependencies:**
+   ```bash
+   composer install
+   ```
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+3. **Install NPM Dependencies & Compile Assets:**
+   ```bash
+   npm install
+   npm run build
+   ```
 
-## Laravel Sponsors
+4. **Environment Setup:**
+   Duplicate the `.env.example` file, rename it to `.env`, and generate the app key:
+   ```bash
+   cp .env.example .env
+   php artisan key:generate
+   ```
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+5. **Configure Variables:**
+   Open `.env` and fill in your details:
+   - **Database Details** (`DB_CONNECTION`, `DB_DATABASE`, etc)
+   - **TMDB API:** 
+     `TMDB_API_KEY=your_api_key_here`
+     `TMDB_BASE_URL=https://api.themoviedb.org/3`
+     `TMDB_IMAGE_BASE=https://image.tmdb.org/t/p/w500`
+   - **Flouci Payments:** 
+     `FLOUCI_APP_TOKEN=your_token`
+     `FLOUCI_APP_SECRET=your_secret`
 
-### Premium Partners
+6. **Run Migrations & Seeders:**
+   ```bash
+   php artisan migrate --seed
+   ```
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+## ⏱️ Scheduled Tasks (TMDB Auto-pull)
 
-## Contributing
+WolfNet utilizes the Laravel Scheduler to update your catalog with trending titles automatically. 
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+To ensure the auto-pull triggers at 3:00 AM daily, you must add the following Cron entry to your server:
+```bash
+* * * * * cd /path-to-your-project && php artisan schedule:run >> /dev/null 2>&1
+```
 
-## Code of Conduct
+If you ever wish to manually force an import of today's trending titles through the command line, run:
+```bash
+php artisan tmdb:import
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+---
+*Built as a state-of-the-art streaming architecture demonstration.*

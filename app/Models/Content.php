@@ -14,20 +14,27 @@ class Content extends Model
 
     // Fillable: columns safe for mass assignment(manually filled by user,Laravel defaults are excluded)
     protected $fillable = [
+        'tmdb_id',
         'title',
         'description',
         'language',
         'type',
         'release_year',
         'thumbnail_url',
+        'backdrop_url',
         'streaming_url',
         'is_premium',
+        'vote_average',
+        'runtime',
     ];
 
     // Casts: how Laravel treats certain column types
     protected $casts = [
-        'is_premium'   => 'boolean',
-        'release_year' => 'integer',
+        'is_premium'    => 'boolean',
+        'release_year'  => 'integer',
+        'tmdb_id'       => 'integer',
+        'vote_average'  => 'float',
+        'runtime'       => 'integer',
     ];
 
     //Database Relationships(defined inside UML class diagram)

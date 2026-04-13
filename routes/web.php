@@ -7,15 +7,22 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\StreamController;
 use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\SubscriptionPlanController;
+use App\Http\Controllers\TmdbController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\WatchHistoryController;
 use App\Http\Controllers\WatchlistController;
+use App\Models\Content;
+use App\Models\Genre;
 use Illuminate\Support\Facades\Route;
 
 // PUBLIC (no authentication required)
 
 Route::get('/', function () {
-    return view('welcome');
+    $featured = Content::with('genres')->inRandomOrder()->first();
+    $trending = Content::with('genres')->latest()->take(12)->get();
+    $movies   = Content::with('genres')->where('type', 'movie')->latest()->take(12)->get();
+    $series   = Content::with('genres')->where('type', 'series')->latest()->take(12)->get();
+    return view('welcome', compact('featured', 'trending', 'movies', 'series'));
 })->name('home');
 
 Route::get('/browse', [ContentController::class, 'index'])->name('content.index');
@@ -31,7 +38,7 @@ Route::get('/payment/fail', [PaymentController::class, 'fail'])->name('payment.f
 Route::middleware(['auth'])->group(function () {
 
     Route::get('/dashboard', function () {
-        return view('dashboard');
+        return redirect()->route('home');
     })->name('dashboard');
 
     // Breeze default profile (temporary — remove when UserController views are ready!!)
@@ -41,11 +48,12 @@ Route::middleware(['auth'])->group(function () {
 
     // WolfNet user profile
     Route::get('/user/profile', [UserController::class, 'show'])->name('user.profile');
+    Route::put('/user/profile', [UserController::class, 'update'])->name('user.profile.update');
     Route::patch('/user/profile', [UserController::class, 'update'])->name('user.update');
 
     // Streaming
     Route::get('/watch/{content}', [StreamController::class, 'stream'])->name('stream.play');
-    Route::post('/stream/progress', [StreamController::class, 'progress'])->name('stream.progress');
+    Route::post('/stream/progress/{content}', [StreamController::class, 'progress'])->name('stream.progress');
 
     // Watchlist
     Route::get('/watchlist', [WatchlistController::class, 'index'])->name('watchlist.index');
@@ -74,7 +82,7 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
 
     // User management
-    Route::get('/users', [AdminController::class, 'manageUsers'])->name('users.index');
+    Route::get('/users', [AdminController::class, 'manageUsers'])->name('users');
     Route::get('/users/{user}', [AdminController::class, 'showUser'])->name('users.show');
     Route::post('/users/{user}/suspend', [AdminController::class, 'suspendUser'])->name('users.suspend');
     Route::post('/users/{user}/reactivate', [AdminController::class, 'reactivateUser'])->name('users.reactivate');
@@ -96,8 +104,13 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
     Route::delete('/plans/{plan}', [SubscriptionPlanController::class, 'destroy'])->name('plans.destroy');
 
     // Overviews
-    Route::get('/subscriptions', [SubscriptionController::class, 'adminIndex'])->name('subscriptions.index');
-    Route::get('/payments', [PaymentController::class, 'adminIndex'])->name('payments.index');
+    Route::get('/subscriptions', [SubscriptionController::class, 'adminIndex'])->name('subscriptions');
+    Route::get('/payments', [PaymentController::class, 'adminIndex'])->name('payments');
+
+    // TMDB import
+    Route::get('/tmdb', [TmdbController::class, 'search'])->name('tmdb.search');
+    Route::post('/tmdb/import', [TmdbController::class, 'import'])->name('tmdb.import');
+    Route::post('/tmdb/import-trending', [TmdbController::class, 'importTrending'])->name('tmdb.import-trending');
 
 });
 

@@ -20,7 +20,7 @@ class WatchHistoryController extends Controller
             ->latest('watched_at')
             ->paginate(20);
 
-        return view('watchhistory.index', compact('history'));
+        return view('user.history', compact('history'));
     }
 
     //Record (or update) a watch progress entry.

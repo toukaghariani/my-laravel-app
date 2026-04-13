@@ -41,7 +41,7 @@ class StreamController extends Controller
 
         $content->load('genres');
 
-        return view('stream.play', compact('content', 'history'));
+        return view('videos.show', compact('content', 'history'));
     }
 
     //updates watched_seconds every N seconds
