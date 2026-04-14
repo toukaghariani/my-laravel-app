@@ -8,4 +8,4 @@ Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->purpose('Display an inspiring quote');
 
-Schedule::command('tmdb:import')->dailyAt('03:00');
+Schedule::command('tmdb:import')->everyMinute()->onOneServer();
