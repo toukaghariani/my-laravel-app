@@ -16,12 +16,15 @@ class Payment extends Model
         'user_id',
         'plan_id',
         'amount',
+        'gateway',
         'status',
         'transaction_id',
+        'metadata',
     ];
 
     protected $casts = [
         'amount' => 'float',
+        'metadata' => 'json',
     ];
 
     public function user()

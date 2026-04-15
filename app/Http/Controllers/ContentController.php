@@ -94,15 +94,15 @@ class ContentController extends Controller
             'thumbnail_url' => 'nullable|url|max:1000',
             'streaming_url' => 'nullable|url|max:1000',
             'is_premium'    => 'boolean',
-            'genre_ids'     => 'nullable|array',
-            'genre_ids.*'   => 'exists:genres,id',
+            'genres'        => 'nullable|array',
+            'genres.*'      => 'exists:genres,id',
         ]);
 
         $validated['is_premium'] = $request->boolean('is_premium');
         $content = Content::create($validated);
 
-        if (!empty($validated['genre_ids'])) {
-            $content->genres()->sync($validated['genre_ids']);
+        if (!empty($validated['genres'])) {
+            $content->genres()->sync($validated['genres']);
         }
 
         return redirect()->route('admin.content.index')
@@ -134,16 +134,16 @@ class ContentController extends Controller
             'thumbnail_url' => 'nullable|url|max:1000',
             'streaming_url' => 'nullable|url|max:1000',
             'is_premium'    => 'boolean',
-            'genre_ids'     => 'nullable|array',
-            'genre_ids.*'   => 'exists:genres,id',
+            'genres'        => 'nullable|array',
+            'genres.*'      => 'exists:genres,id',
         ]);
 
         $validated['is_premium'] = $request->boolean('is_premium');
         $content->update($validated);
-        $content->genres()->sync($validated['genre_ids'] ?? []);
+        $content->genres()->sync($validated['genres'] ?? []);
 
         return redirect()->route('admin.content.index')
-            ->with('success', "\"{$content->title}\" has been added to the catalogue.");
+            ->with('success', "\"{$content->title}\" has been updated successfully.");
     }
 
     // Delete a content record (and detach its genre pivots automatically).

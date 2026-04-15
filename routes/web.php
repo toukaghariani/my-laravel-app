@@ -11,6 +11,7 @@ use App\Http\Controllers\TmdbController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\WatchHistoryController;
 use App\Http\Controllers\WatchlistController;
+use App\Http\Controllers\StripeWebhookController;
 use App\Models\Content;
 use App\Models\Genre;
 use Illuminate\Support\Facades\Route;
@@ -29,9 +30,13 @@ Route::get('/browse', [ContentController::class, 'index'])->name('content.index'
 Route::get('/content/{content}', [ContentController::class, 'show'])->name('content.show');
 Route::get('/plans', [SubscriptionController::class, 'plans'])->name('subscriptions.plans');
 
-// Flouci callbacks — outside auth middleware (session may not persist through redirect)
+// Gateway callbacks — outside auth middleware
 Route::get('/payment/success', [PaymentController::class, 'success'])->name('payment.success');
 Route::get('/payment/fail', [PaymentController::class, 'fail'])->name('payment.fail');
+Route::get('/payment/stripe/success', [PaymentController::class, 'stripeSuccess'])->name('payment.stripe.success');
+
+// Webhooks
+Route::post('/webhook/stripe', [StripeWebhookController::class, 'handle'])->name('webhook.stripe');
 
 // AUTH (any logged-in user)
 

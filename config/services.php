@@ -35,17 +35,19 @@ return [
         ],
     ],
 
-    // ── Flouci Tunisian payment gateway ───────────────────────────
-    'flouci' => [
-        'app_token'  => env('FLOUCI_APP_TOKEN'),
-        'app_secret' => env('FLOUCI_APP_SECRET'),
-    ],
 
     // ── TMDB (The Movie Database) ──────────────────────────────────
     'tmdb' => [
         'key'        => env('TMDB_API_KEY'),
         'base_url'   => env('TMDB_BASE_URL', 'https://api.themoviedb.org/3'),
         'image_base' => env('TMDB_IMAGE_BASE', 'https://image.tmdb.org/t/p/w500'),
+    ],
+
+    // ── Stripe Payment Gateway ─────────────────────────────────────
+    'stripe' => [
+        'key'    => env('STRIPE_KEY'),
+        'secret' => env('STRIPE_SECRET'),
+        'webhook_secret' => env('STRIPE_WEBHOOK_SECRET'),
     ],
 
 ];

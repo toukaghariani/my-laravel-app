@@ -10,149 +10,130 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Carbon;
+use Stripe\Stripe;
+use Stripe\Checkout\Session as StripeSession;
 
 class PaymentController extends Controller
 {
 
     public function checkout(SubscriptionPlan $plan)
     {
+        return $this->stripeCheckout($plan);
+    }
+
+    private function stripeCheckout(SubscriptionPlan $plan)
+    {
         $user = Auth::user();
+        Stripe::setApiKey(config('services.stripe.secret'));
 
-        // Build the Flouci "generate_payment" payload(in millimes)
+        try {
+            $options = $this->getStripeSessionOptions($user, $plan);
+            $checkoutSession = StripeSession::create($options);
 
-        $amountMillimes = (int) ($plan->price * 1000);
+            Payment::create([
+                'user_id'        => $user->id,
+                'plan_id'        => $plan->id,
+                'amount'         => $plan->price,
+                'gateway'        => 'stripe',
+                'status'         => 'pending',
+                'transaction_id' => $checkoutSession->id,
+                'metadata'       => ['checkout_session_id' => $checkoutSession->id],
+            ]);
 
-        $payload = [
-            'app_token'              => config('services.flouci.app_token'),
-            'app_secret'             => config('services.flouci.app_secret'),
-            'accept_card'            => true,
-            'amount'                 => $amountMillimes,
-            'success_link'           => route('payment.success'),
-            'fail_link'              => route('payment.fail'),
-            'session_timeout_secs'   => 1200,
-            'developer_tracking_id'  => 'wolfnet-' . $user->id . '-' . time(),
-        ];
+            return redirect()->away($checkoutSession->url);
 
-        $response = Http::post('https://developers.flouci.com/api/generate_payment', $payload);
+        } catch (\Exception $e) {
+            Log::error('Stripe Checkout Failed', ['error' => $e->getMessage()]);
+            return redirect()->route('subscriptions.plans')
+                ->with('error', 'Checkout could not be initiated. Please try again later.');
+        }
+    }
 
-        if (!$response->successful() || !($response->json('success') === true)) {
-            Log::error('Flouci generate_payment failed', [
-                'status'  => $response->status(),
-                'body'    => $response->json(),
+    private function getStripeSessionOptions($user, SubscriptionPlan $plan): array
+    {
+        return [
+            'payment_method_types' => ['card'],
+            'line_items' => [[
+                'price_data' => [
+                    'currency' => 'usd',
+                    'product_data' => [
+                        'name' => 'WolfNet - ' . $plan->name,
+                        'description' => $plan->duration_days . ' days of premium access',
+                    ],
+                    'unit_amount' => (int) ($plan->price * 100),
+                ],
+                'quantity' => 1,
+            ]],
+            'mode' => 'payment',
+            'success_url' => route('payment.stripe.success') . '?session_id={CHECKOUT_SESSION_ID}',
+            'cancel_url' => route('payment.fail'),
+            'customer_email' => $user->email,
+            'metadata' => [
                 'user_id' => $user->id,
                 'plan_id' => $plan->id,
-            ]);
-
-            return redirect()->route('subscriptions.plans')
-                ->with('error', 'Payment gateway is unavailable. Please try again later.');
-        }
-
-        $flouciPaymentId = $response->json('result.payment_id');
-        $flouciLink      = $response->json('result.link');
-
-        // Persist the pending payment record before leaving our app
-        Payment::create([
-            'user_id'        => $user->id,
-            'plan_id'        => $plan->id,
-            'amount'         => $plan->price,
-            'status'         => 'pending',
-            'transaction_id' => $flouciPaymentId,
-        ]);
-
-        // Store plan_id in session so success() can retrieve it
-        // (Flouci only gives us back payment_id in the redirect)
-        session(['wolfnet_pending_plan_id' => $plan->id]);
-
-        return redirect()->away($flouciLink);
+            ],
+        ];
     }
 
-    // Flouci redirects here after the user pays(MUST verify the payment with Flouci before activating anything)
-
-    public function success(Request $request)
+    public function stripeSuccess(Request $request)
     {
-        $user            = Auth::user();
-        $flouciPaymentId = $request->query('payment_id');
+        $sessionId = $request->query('session_id');
 
-        if (!$flouciPaymentId) {
-            return redirect()->route('subscriptions.plans')
-                ->with('error', 'Invalid payment callback. Please contact support.');
+        if (!$sessionId) {
+            return redirect()->route('subscriptions.plans')->with('error', 'Invalid checkout session.');
         }
 
-        //Flouci verification
-        $verification = Http::withHeaders([
-            'apppublic' => config('services.flouci.app_token'),
-            'appsecret' => config('services.flouci.app_secret'),
-        ])->get("https://developers.flouci.com/api/verify_payment/{$flouciPaymentId}");
+        // ─── Synchronous Verification ─────────────────────────────────
+        // Fallback for local development or delayed webhooks.
+        try {
+            Stripe::setApiKey(config('services.stripe.secret'));
+            $session = StripeSession::retrieve($sessionId);
 
-        if (!$verification->successful() || $verification->json('result.status') !== 'SUCCESS') {
-            Log::warning('Flouci payment verification failed', [
-                'payment_id' => $flouciPaymentId,
-                'user_id'    => $user->id,
-                'response'   => $verification->json(),
-            ]);
+            if ($session->payment_status === 'paid') {
+                $payment = Payment::where('transaction_id', $sessionId)->first();
 
-            // Mark our pending record as failed
-            Payment::where('transaction_id', $flouciPaymentId)
-                   ->where('user_id', $user->id)
-                   ->update(['status' => 'failed']);
+                if ($payment && $payment->status !== 'confirmed') {
+                    $payment->update([
+                        'status' => 'confirmed',
+                        'metadata' => array_merge($payment->metadata ?? [], [
+                            'stripe_payment_intent' => $session->payment_intent,
+                        ])
+                    ]);
 
-            return redirect()->route('payment.fail')
-                ->with('error', 'Payment could not be verified. Please try again.');
+                    $user = Auth::user() ?? \App\Models\User::find($payment->user_id);
+                    $plan = SubscriptionPlan::find($payment->plan_id);
+
+                    if ($user && $plan) {
+                        $this->subscribe($user, $plan, $payment);
+                    }
+                }
+            }
+        } catch (\Exception $e) {
+            Log::error('Synchronous Stripe Verification Failed', ['error' => $e->getMessage()]);
+            // Continue to fallback check below
         }
 
-        // Payment confirmed (update our record)
-        $payment = Payment::where('transaction_id', $flouciPaymentId)
-                          ->where('user_id', $user->id)
-                          ->first();
+        // Refresh payment record for final status check
+        $payment = Payment::where('transaction_id', $sessionId)->first();
 
-        if (!$payment) {
-            // Should never happen, but defensively handle it
-            return redirect()->route('subscriptions.plans')
-                ->with('error', 'Payment record not found. Contact support.');
+        if ($payment && $payment->status === 'confirmed') {
+            return redirect()->route('subscriptions.index')
+                ->with('success', 'Your subscription is active! Welcome to WolfNet.');
         }
-
-        $payment->update(['status' => 'confirmed']);
-
-        // Retrieve plan from session (set in checkout())
-        $planId = session()->pull('wolfnet_pending_plan_id');
-        $plan   = SubscriptionPlan::find($planId ?? $payment->plan_id);
-
-        if (!$plan) {
-            Log::error('Plan not found after payment confirmation', ['payment_id' => $payment->id]);
-            return redirect()->route('subscriptions.plans')
-                ->with('error', 'Plan configuration error. Contact support.');
-        }
-
-        // ── Activate subscription (PRIVATE — never a direct route) ─
-        $this->subscribe($user, $plan, $payment);
 
         return redirect()->route('subscriptions.index')
-            ->with('success', 'Payment confirmed! Your subscription to "' . $plan->name . '" is now active.');
+            ->with('success', 'Payment received! We are activating your subscription now...');
     }
-
-    // Flouci redirects here when the user cancels or card fails.
 
     public function fail(Request $request)
     {
-        $flouciPaymentId = $request->query('payment_id');
-
-        if ($flouciPaymentId) {
-            Payment::where('transaction_id', $flouciPaymentId)
-                   ->where('user_id', Auth::id())
-                   ->update(['status' => 'failed']);
-        }
-
-        session()->forget('wolfnet_pending_plan_id');
-
         return redirect()->route('subscriptions.plans')
-            ->with('error', 'Payment failed or was cancelled. You have not been charged. Please try again.');
+            ->with('error', 'Payment was cancelled or failed. Your account has not been charged.');
     }
 
     // subscription activation
-    // Never exposed as a route!! (Called only from success() after)
-    // Flouci confirms payment (handles both fresh subscriptions and early-renewal subscriptions(queued ones))
 
-    private function subscribe($user, SubscriptionPlan $plan, Payment $payment): void
+    public function subscribe($user, SubscriptionPlan $plan, Payment $payment): void
     {
         if ($user->hasActiveSub()) {
             // early renewal (queue the new subscription)
@@ -160,22 +141,22 @@ class PaymentController extends Controller
             $current = $user->currentSubscription();
 
             Subscription::create([
-                'user_id'    => $user->id,
-                'plan_id'    => $plan->id,
+                'user_id' => $user->id,
+                'plan_id' => $plan->id,
                 'payment_id' => $payment->id,
-                'status'     => 'queued',
-                'starts_at'  => $current->ends_at,
-                'ends_at'    => $current->ends_at->addDays($plan->duration_days),
+                'status' => 'queued',
+                'starts_at' => $current->ends_at,
+                'ends_at' => $current->ends_at->addDays($plan->duration_days),
             ]);
         } else {
             // fresh subscription (activate immediately)
             Subscription::create([
-                'user_id'    => $user->id,
-                'plan_id'    => $plan->id,
+                'user_id' => $user->id,
+                'plan_id' => $plan->id,
                 'payment_id' => $payment->id,
-                'status'     => 'active',
-                'starts_at'  => Carbon::now(),
-                'ends_at'    => Carbon::now()->addDays($plan->duration_days),
+                'status' => 'active',
+                'starts_at' => Carbon::now(),
+                'ends_at' => Carbon::now()->addDays($plan->duration_days),
             ]);
         }
     }

@@ -10,7 +10,7 @@ GLSI2/LCS2, academic year 2025/2026, supervised by Prof. Faouzi MOUSSA.
 
 Tunisian users cannot access international streaming platforms due to
 international card requirements and resort to illegal streaming sites.
-WolfNet offers legal streaming with local Tunisian payment via Flouci.
+WolfNet offers legal streaming with secure card payments via **Stripe**.
 
 ---
 
@@ -33,10 +33,10 @@ WolfNet offers legal streaming with local Tunisian payment via Flouci.
 - Browse and search content catalog (title, genre, language, type)
 - TMDB API integration — import real content metadata directly from admin panel
 - User registration and session-based authentication (Laravel Breeze)
-- Subscription plans with Flouci payment gateway integration
+- Subscription plans with **Stripe Checkout** integration
 - Premium content paywall with subscription state enforcement
 - Early renewal support — queued subscriptions start after current period ends
-- Immediate cancellation with no refund (Flouci sandbox limitation)
+- Immediate cancellation via user dashboard
 - Video streaming with resume playback (watched_seconds tracking)
 - Personal watchlist (add/remove bookmarks)
 - Watch history with progress tracking
@@ -48,13 +48,13 @@ WolfNet offers legal streaming with local Tunisian payment via Flouci.
 
 ## Tech Stack
 
-- **Backend**: Laravel 11.x, PHP 8.3, Eloquent ORM
+- **Backend**: Laravel 11.53.0, PHP 8.3, Eloquent ORM
 - **Frontend**: Blade templating, Tailwind CSS, vanilla JavaScript
 - **Database**: MySQL 8.0 (master/slave replication)
 - **Web server**: Nginx 1.24
 - **Deployment**: Ansible
 - **OS**: Ubuntu Server 24.04 LTS
-- **Payment**: Flouci (Tunisian gateway, sandbox)
+- **Payment**: Stripe (supporting TND and international cards)
 - **Auth**: Laravel Breeze (session-based)
 - **Content API**: TMDB (The Movie Database)
 
@@ -137,8 +137,9 @@ APP_DEBUG=false
 APP_URL=http://192.168.56.100
 SESSION_DRIVER=database
 DB_HOST=192.168.56.101
-FLOUCI_APP_TOKEN=your_sandbox_token
-FLOUCI_APP_SECRET=your_sandbox_secret
+STRIPE_KEY=your_stripe_publishable_key
+STRIPE_SECRET=your_stripe_secret_key
+STRIPE_WEBHOOK_SECRET=your_webhook_signing_secret
 TMDB_API_KEY=your_tmdb_read_access_token
 TMDB_BASE_URL=https://api.themoviedb.org/3
 TMDB_IMAGE_BASE=https://image.tmdb.org/t/p/w500

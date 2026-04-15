@@ -33,16 +33,12 @@
         @endif
 
         {{-- Queued --}}
-        @if(isset($queued) && $queued->count())
+        @if($queued)
             <div class="surface-card p-6">
-                <h2 class="text-lg font-semibold text-white mb-4">Queued Subscriptions</h2>
-                <div class="space-y-3">
-                    @foreach($queued as $sub)
-                        <div class="flex items-center justify-between py-2 px-3 bg-surface-600 rounded-md text-sm">
-                            <span class="text-gray-300">{{ $sub->plan->name ?? '—' }}</span>
-                            <span class="text-gray-500">Starts {{ $sub->starts_at->format('M d, Y') }}</span>
-                        </div>
-                    @endforeach
+                <h2 class="text-lg font-semibold text-white mb-4">Queued Subscription</h2>
+                <div class="flex items-center justify-between py-2 px-3 bg-surface-600 rounded-md text-sm">
+                    <span class="text-gray-300">{{ $queued->plan->name ?? '—' }}</span>
+                    <span class="text-gray-500">Starts {{ $queued->starts_at->format('M d, Y') }}</span>
                 </div>
             </div>
         @endif
