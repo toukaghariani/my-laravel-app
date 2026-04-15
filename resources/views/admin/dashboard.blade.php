@@ -21,19 +21,19 @@
     <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
         <div class="surface-card p-5">
             <p class="text-xs text-gray-500 uppercase tracking-wider mb-1">Total Users</p>
-            <p class="text-3xl font-bold text-white">{{ number_format($stats['users'] ?? 0) }}</p>
+            <p class="text-3xl font-bold text-white">{{ number_format($stats['total_users'] ?? 0) }}</p>
         </div>
         <div class="surface-card p-5">
             <p class="text-xs text-gray-500 uppercase tracking-wider mb-1">Total Content</p>
-            <p class="text-3xl font-bold text-white">{{ number_format($stats['content'] ?? 0) }}</p>
+            <p class="text-3xl font-bold text-white">{{ number_format($stats['total_content'] ?? 0) }}</p>
         </div>
         <div class="surface-card p-5">
             <p class="text-xs text-gray-500 uppercase tracking-wider mb-1">Active Subs</p>
-            <p class="text-3xl font-bold text-brand">{{ number_format($stats['subscriptions'] ?? 0) }}</p>
+            <p class="text-3xl font-bold text-brand">{{ number_format($stats['active_subs'] ?? 0) }}</p>
         </div>
         <div class="surface-card p-5">
             <p class="text-xs text-gray-500 uppercase tracking-wider mb-1">Revenue</p>
-            <p class="text-3xl font-bold text-green-400">{{ number_format($stats['revenue'] ?? 0) }} <span class="text-sm text-gray-500">TND</span></p>
+            <p class="text-3xl font-bold text-green-400">{{ number_format($stats['revenue_total'] ?? 0) }} <span class="text-sm text-gray-500">TND</span></p>
         </div>
     </div>
 
